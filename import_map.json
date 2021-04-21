@@ -1,8 +1,0 @@
-{
-  "imports": {
-    "oak/": "https://deno.land/x/oak@v7.2.0/",
-    "dotenv/": "https://deno.land/x/dotenv@v2.0.0/",
-    "denon/": "https://deno.land/x/denon@2.4.7/",
-    "mongo/": "https://deno.land/x/mongo@v0.22.0/"
-  }
-}
