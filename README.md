@@ -1,2 +1,3 @@
 # deno-restaurant-api
-🦕 Server API for restaurant (menu, order, delivery, ...) with Deno and Oak
+
+🦕 Simple API for restaurants, using Deno and Oak.
