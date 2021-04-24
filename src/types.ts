@@ -1,22 +1,12 @@
-export interface BaseSchema {
+import { Bson } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
+
+export interface BaseDocument extends Bson.Document {
   readonly _id: { $oid: string };
 }
 
-export interface Restaurant {
-  title: string;
-
-  name: string;
-
-  description?: string;
-
-  medias?: any;
-
-  menu?: any;
-
-  contact?: {
-    phone: string;
-    email: string;
-  };
-}
-
-export type RestaurantSchema = Restaurant & BaseSchema;
+export type Query = {
+  fields?: string[];
+  offset?: number;
+  limit?: number;
+  [key: string]: any;
+};

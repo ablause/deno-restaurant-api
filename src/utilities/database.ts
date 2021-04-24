@@ -1,17 +1,8 @@
-import { MongoClient } from "mongo/mod.ts";
-
-// class Database {
-//   #client = new MongoClient();
-
-//   constructor(private options: string | ConnectOptions) {}
-
-//   connect() {
-//     this.#client.connect(this.options);
-//   }
-// }
+import { MongoClient } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
 
 const client = new MongoClient();
+const MONGO_URI = Deno.env.get("MONGO_URI")!;
 
-const database = await client.connect('')
+const database = await client.connect(MONGO_URI);
 
 export default database;

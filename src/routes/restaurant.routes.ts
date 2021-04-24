@@ -1,60 +1,36 @@
-import { Router, helpers } from "oak/mod.ts";
-import { Bson } from 'mongo/mod.ts';
+import { Router } from "https://deno.land/x/oak@v7.3.0/mod.ts";
+import { restaurantSchema } from "../models/restaurant.model.ts";
+import RestaurantController from "../controllers/restaurant.controller.ts";
+import validation from "../middlewares/validation.ts";
 
-import { restaurants } from '../models/restaurant.model.ts';
-
-const router = new Router({ prefix: '/restaurant' });
+const router = new Router({ prefix: "/restaurants" });
+const controller = new RestaurantController({
+  params: { id: "restaurant_id" },
+});
 
 // GET ALL
-router.get('/', async (ctx) => {
-  const query = await restaurants
-    .find()
-    .next()
-
-  ctx.response.body = query;
+router.get("/", (context) => {
+  return controller.getRestaurants(context);
 });
 
 // GET ONE
-router.get('/:id', async (ctx) => {
-  const { id } = helpers.getQuery(ctx, { mergeParams: true });
-
-  const query = await restaurants
-    .findOne(id)
-
-  ctx.response.body = query;
+router.get("/:restaurant_id", (context) => {
+  return controller.getRestaurantByID(context);
 });
 
 // CREATE
-router.post('/', async (ctx) => {
-  const { body } = ctx.request;
-
-  if (!body) ctx.throw(400, 'Please provide data');
-
-  const query = await restaurants
-    .insertOne(body);
-
-  ctx.response.body = query;
+router.post("/", validation(restaurantSchema), (context) => {
+  return controller.createRestaurant(context);
 });
 
 // UPDATE
-router.put('/:id', async (ctx) => {
-  const { id } = helpers.getQuery(ctx, { mergeParams: true });
-  const { body } = ctx.request;
-
-  await restaurants
-    .updateOne({ _id: new Bson.ObjectId(id) }, body);
-
-  ctx.response.status = 200;
+router.put("/:restaurant_id", validation(restaurantSchema), (context) => {
+  controller.updateRestaurantByID(context);
 });
 
 // DELETE
-router.delete('/', async (ctx) => {
-  const { id } = ctx.params;
-
-  const query = await restaurants
-    .deleteOne({ _id: new Bson.ObjectId(id) });
-
-  ctx.response.body = query;
+router.delete("/:restaurant_id", (context) => {
+  return controller.deleteRestaurantByID(context);
 });
 
 export default router;
