@@ -10,7 +10,7 @@ Deno.test(`POST /restaurants responds with status code ${Status.Created}`, async
   const request = await superoak(app);
 
   await request
-    .post("/restaurants")
+    .post("/v1/restaurants")
     .send({ name: `restaurant-${startTime}`, title: "myRestaurant" })
     .expect(Status.Created)
     .then((res) => {
@@ -23,7 +23,7 @@ Deno.test(`GET /restaurants responds with status code ${Status.OK}`, async () =>
   const request = await superoak(app);
 
   await request
-    .get("/restaurants")
+    .get("/v1/restaurants")
     .expect(Status.OK);
 });
 
@@ -31,7 +31,7 @@ Deno.test(`GET /restaurants/:id responds with status code ${Status.OK}`, async (
   const request = await superoak(app);
 
   await request
-    .get(`/restaurants/${restaurantId}`)
+    .get(`/v1/restaurants/${restaurantId}`)
     .expect(Status.OK);
 });
 
@@ -39,6 +39,6 @@ Deno.test(`DELETE /restaurants/:id responds with status code ${Status.NoContent}
   const request = await superoak(app);
 
   await request
-    .delete(`/restaurants/${restaurantId}`)
+    .delete(`/v1/restaurants/${restaurantId}`)
     .expect(Status.NoContent);
 });
