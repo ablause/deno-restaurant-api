@@ -2,16 +2,12 @@ import { Bson } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
 import { Status, STATUS_TEXT } from "https://deno.land/std@0.94.0/http/mod.ts";
 import type { RouterContext } from "https://deno.land/x/oak@v7.3.0/mod.ts";
 
-import BaseController, { Options } from "../utilities/baseController.ts";
+import RestaurantService from "../services/restaurant.service.ts";
+import BaseController from "../utilities/baseController.ts";
 import type { Restaurant } from "../models/restaurant.model.ts";
-import type { BaseDocument } from "../types.ts";
 
-type RestaurantDocument = Restaurant & BaseDocument;
-
-class RestaurantController extends BaseController<RestaurantDocument> {
-  constructor(options?: Omit<Options, "collection">) {
-    super({ collection: "restaurants", ...options });
-  }
+class RestaurantController extends BaseController {
+  private restaurantService = new RestaurantService();
 
   /**
    * createRestaurant
@@ -20,7 +16,7 @@ class RestaurantController extends BaseController<RestaurantDocument> {
     const values: Restaurant = await context.request.body().value;
 
     try {
-      const documentID = await this.collection.insertOne(values);
+      const documentID = await this.restaurantService.create(values);
 
       context.response.status = Status.Created;
       context.response.body = this.sanitize({ _id: documentID, ...values });
@@ -36,10 +32,10 @@ class RestaurantController extends BaseController<RestaurantDocument> {
     const { offset, limit } = this.getParsedQuery(context);
 
     try {
-      const documents = await this.collection
-        // @ts-ignore
-        .find({}, { noCursorTimeout: false, skip: offset, limit })
-        .next();
+      const documents = await this.restaurantService.find({}, {
+        limit,
+        skip: offset,
+      });
 
       context.response.status = Status.OK;
       context.response.body = this.sanitize(documents);
@@ -56,9 +52,7 @@ class RestaurantController extends BaseController<RestaurantDocument> {
 
     try {
       const _id = new Bson.ObjectID(query[this.params.id]);
-      const document = await this.collection.findOne({ _id }, {
-        // @ts-ignore
-        noCursorTimeout: false,
+      const document = await this.restaurantService.findOne({ _id }, {
         projection: fields,
       });
 
@@ -78,10 +72,9 @@ class RestaurantController extends BaseController<RestaurantDocument> {
 
     try {
       const _id = new Bson.ObjectID(query[this.params.id]);
-      await this.collection.updateOne({ _id }, updatedValue);
+      await this.restaurantService.updateOne({ _id }, updatedValue);
 
       context.response.status = Status.NoContent;
-      context.response.body = STATUS_TEXT.get(Status.NoContent);
     } catch (error) {
       context.throw(Status.InternalServerError, error.message);
     }
@@ -95,10 +88,9 @@ class RestaurantController extends BaseController<RestaurantDocument> {
 
     try {
       const _id = new Bson.ObjectID(query[this.params.id]);
-      await this.collection.deleteOne({ _id });
+      await this.restaurantService.deleteOne({ _id });
 
       context.response.status = Status.NoContent;
-      context.response.body = STATUS_TEXT.get(Status.NoContent);
     } catch (error) {
       context.throw(Status.InternalServerError, error.message);
     }

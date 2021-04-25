@@ -25,7 +25,7 @@ router.post("/", validation(restaurantSchema), (context) => {
 
 // UPDATE
 router.put("/:restaurant_id", validation(restaurantSchema), (context) => {
-  controller.updateRestaurantByID(context);
+  return controller.updateRestaurantByID(context);
 });
 
 // DELETE

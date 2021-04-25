@@ -3,20 +3,17 @@ import {
   helpers,
   RouterContext,
 } from "https://deno.land/x/oak@v7.3.0/mod.ts";
+import { Status, STATUS_TEXT } from "https://deno.land/std@0.94.0/http/mod.ts";
 import type { Query } from "../types.ts";
-import database from "./database.ts";
 
 export interface Options {
-  collection: string;
   params?: { [key: string]: string };
 }
 
-abstract class BaseController<T> {
-  protected collection: ReturnType<typeof database["collection"]>;
+abstract class BaseController {
   protected params: { [key: string]: string };
 
-  constructor({ collection, params = { id: "id" } }: Options) {
-    this.collection = database.collection<T>(collection);
+  constructor({ params = { id: "id" } }: Options) {
     this.params = params;
   }
 
