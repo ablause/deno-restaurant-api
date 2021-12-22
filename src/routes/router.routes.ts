@@ -1,8 +1,10 @@
-import { Router } from "https://deno.land/x/oak@v7.3.0/mod.ts";
+import { Router } from "oak/mod.ts";
 import { VERSION_API } from "../constants.ts";
-import restaurantRouter from "./restaurant.routes.ts";
+import { State } from "../types/mod.ts";
 
-const router = new Router({ prefix: VERSION_API });
+import restaurantRouter from "./restaurants.routes.ts";
+
+const router = new Router<State>({ prefix: VERSION_API });
 
 router.use(restaurantRouter.routes())
   .use(restaurantRouter.allowedMethods());

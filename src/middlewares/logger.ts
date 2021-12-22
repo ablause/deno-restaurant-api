@@ -1,6 +1,6 @@
-import { Context } from "https://deno.land/x/oak@v7.3.0/mod.ts";
+import { Middleware } from "oak/mod.ts";
 
-const logger = async (context: Context, next: () => any) => {
+const logger: Middleware = async (context, next) => {
   await next();
 
   const body = await context.request.body().value;

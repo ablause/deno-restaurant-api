@@ -1,16 +1,28 @@
-import { Status } from "https://deno.land/std@0.94.0/http/mod.ts";
-import type { ZodSchema } from "https://deno.land/x/zod@v3.0.0-alpha.33/mod.ts";
-import type { Context } from "https://deno.land/x/oak@v7.3.0/mod.ts";
+import type { AnyZodObject, ZodError } from "zod/mod.ts";
+import { RouteParams, RouterMiddleware, Status } from "oak/mod.ts";
+import { State } from "../types/mod.ts";
 
-const validation = (schema: ZodSchema<any>) => {
-  return async (context: Context, next: () => void) => {
-    const body = await context.request.body()
-      .value;
+const validate = <R extends string = "">(
+  schema: AnyZodObject,
+): RouterMiddleware<R, RouteParams<R>, State> => {
+  return async (context, next) => {
+    try {
+      if (context.params) {
+        await schema.parseAsync(context.params);
+      }
 
-    schema.parseAsync(body)
-      .then(() => next())
-      .catch((err) => context.throw(Status.BadRequest, err));
+      if (context.request.hasBody) {
+        const body = await context.request.body()
+          .value;
+
+        await schema.parseAsync(body);
+      }
+    } catch (error) {
+      context.throw(Status.BadRequest, (error as ZodError).message);
+    }
+
+    await next();
   };
 };
 
-export default validation;
+export default validate;

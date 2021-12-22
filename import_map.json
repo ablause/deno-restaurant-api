@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "oak/": "https://deno.land/x/oak@v10.0.0/",
+    "djwt/": "https://deno.land/x/djwt@v2.4/",
+    "mongo/": "https://deno.land/x/mongo@v0.28.1/",
+    "zod/": "https://deno.land/x/zod@v3.11.6/",
+    "bcrypt/": "https://deno.land/x/bcrypt@v0.2.4/",
+    "superoak/": "https://deno.land/x/superoak@4.5.0/"
+  }
+}

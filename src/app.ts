@@ -1,10 +1,12 @@
-import { Application } from "https://deno.land/x/oak@v7.3.0/mod.ts";
-import { logger } from "./middlewares/mod.ts";
+import { Application } from "oak/mod.ts";
 import { router } from "./routes/mod.ts";
+import { handleError, logger } from "./middlewares/mod.ts";
+import { State } from "./types/oak.interfaces.ts";
 
-const app = new Application();
+const app = new Application<State>();
 
 app.use(logger);
+app.use(handleError);
 
 // Routes :
 app.use(router.routes())

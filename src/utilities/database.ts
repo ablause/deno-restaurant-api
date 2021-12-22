@@ -1,7 +1,12 @@
-import { MongoClient } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
+import { MongoClient } from "mongo/mod.ts";
 
 const client = new MongoClient();
-const MONGO_URI = Deno.env.get("MONGO_URI")!;
+
+const MONGO_URI = Deno.env.get("MONGO_URI");
+
+if (!MONGO_URI) {
+  throw new Error("Missing environment variable");
+}
 
 const database = await client.connect(MONGO_URI);
 

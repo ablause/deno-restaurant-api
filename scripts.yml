@@ -1,0 +1,18 @@
+allow:
+  - net
+  - read
+  - env
+
+envFile:
+  - .env
+
+scripts:
+  start:
+    cmd: deno run server.ts
+    imap: import_map.json
+  start-watch:
+    cmd: deno run server.ts
+    imap: import_map.json
+  test:
+    cmd: deno test server.ts
+    imap: import_map.json

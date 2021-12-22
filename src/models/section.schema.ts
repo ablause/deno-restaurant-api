@@ -1,4 +1,4 @@
-import { z } from "https://deno.land/x/zod@v3.0.0-alpha.33/mod.ts";
+import { z } from "zod/mod.ts";
 
 export interface ISection {
   id: string;
@@ -18,7 +18,6 @@ const sectionSchema: z.ZodSchema<ISection> = z.lazy(() =>
   })
 );
 
-type Section = z.infer<typeof sectionSchema>;
+export type Section = z.infer<typeof sectionSchema>;
 
-export { sectionSchema };
-export type { Section };
+export default sectionSchema;
